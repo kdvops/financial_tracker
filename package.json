@@ -1,0 +1,15 @@
+{
+  "name": "financial-tracker",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @financial-tracker/shared-contracts && npm run build --workspace @financial-tracker/api",
+    "dev:api": "npm run start:dev --workspace @financial-tracker/api",
+    "lint": "npm run lint --workspace @financial-tracker/api",
+    "test": "npm run test --workspace @financial-tracker/api"
+  }
+}

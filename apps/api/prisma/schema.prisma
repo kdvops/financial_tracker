@@ -1,0 +1,209 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String            @id @default(uuid()) @db.Uuid
+  email            String            @unique @db.VarChar(255)
+  passwordHash     String?           @map("password_hash")
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  oauthConnections OauthConnection[]
+  rawMessages      RawMessage[]
+  cards            Card[]
+  categories       Category[]
+  transactions     Transaction[]
+  budgets          Budget[]
+  alerts           Alert[]
+  categoryRules    CategoryRule[]
+  refreshTokens    RefreshToken[]
+  auditLogs        AuditLog[]
+
+  @@map("users")
+}
+
+model OauthConnection {
+  id                   String   @id @default(uuid()) @db.Uuid
+  userId               String   @map("user_id") @db.Uuid
+  provider             String   @db.VarChar(50)
+  providerAccountId    String?  @map("provider_account_id")
+  accessTokenEncrypted String   @map("access_token_encrypted")
+  refreshTokenEncrypted String? @map("refresh_token_encrypted")
+  scopes               String[]
+  expiresAt            DateTime? @map("expires_at")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, provider])
+  @@map("oauth_connections")
+}
+
+model RawMessage {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  source           String   @db.VarChar(50)
+  provider         String?  @db.VarChar(100)
+  providerMessageId String? @map("provider_message_id")
+  subject          String?
+  sender           String?
+  receivedAt       DateTime? @map("received_at")
+  bodyHash         String   @map("body_hash")
+  normalizedText   String?  @map("normalized_text")
+  processingStatus String   @map("processing_status") @db.VarChar(50)
+  createdAt        DateTime @default(now()) @map("created_at")
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions     Transaction[]
+
+  @@unique([userId, source, providerMessageId])
+  @@index([userId, createdAt])
+  @@map("raw_messages")
+}
+
+model Card {
+  id          String        @id @default(uuid()) @db.Uuid
+  userId      String        @map("user_id") @db.Uuid
+  bankName    String?       @map("bank_name") @db.VarChar(150)
+  displayName String        @map("display_name") @db.VarChar(150)
+  cardLast4   String?       @map("card_last4") @db.VarChar(4)
+  currency    String        @default("DOP") @db.VarChar(3)
+  creditLimit Decimal?      @map("credit_limit") @db.Decimal(14, 2)
+  cutoffDay   Int?          @map("cutoff_day")
+  dueDay      Int?          @map("due_day")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@index([userId])
+  @@map("cards")
+}
+
+model Category {
+  id          String         @id @default(uuid()) @db.Uuid
+  userId      String?        @map("user_id") @db.Uuid
+  name        String         @db.VarChar(100)
+  isSystem    Boolean        @default(false) @map("is_system")
+  user        User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  budgets     Budget[]
+  categoryRules CategoryRule[]
+
+  @@index([userId, name])
+  @@map("categories")
+}
+
+model Transaction {
+  id               String    @id @default(uuid()) @db.Uuid
+  userId           String    @map("user_id") @db.Uuid
+  cardId           String?   @map("card_id") @db.Uuid
+  categoryId       String?   @map("category_id") @db.Uuid
+  rawMessageId     String?   @unique @map("raw_message_id") @db.Uuid
+  bankName         String?   @map("bank_name") @db.VarChar(150)
+  cardLast4        String?   @map("card_last4") @db.VarChar(4)
+  type             String    @db.VarChar(50)
+  amount           Decimal   @db.Decimal(14, 2)
+  currency         String    @db.VarChar(3)
+  merchant         String?
+  transactionDate  DateTime  @map("transaction_date")
+  source           String    @db.VarChar(50)
+  status           String    @db.VarChar(50)
+  confidence       Decimal?  @db.Decimal(4, 3)
+  duplicateGroupId String?   @map("duplicate_group_id") @db.Uuid
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card             Card?     @relation(fields: [cardId], references: [id], onDelete: SetNull)
+  category         Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  rawMessage       RawMessage? @relation(fields: [rawMessageId], references: [id], onDelete: SetNull)
+  alerts           Alert[]
+
+  @@index([userId, transactionDate])
+  @@index([rawMessageId])
+  @@map("transactions")
+}
+
+model Budget {
+  id             String    @id @default(uuid()) @db.Uuid
+  userId         String    @map("user_id") @db.Uuid
+  categoryId     String?   @map("category_id") @db.Uuid
+  amount         Decimal   @db.Decimal(14, 2)
+  currency       String    @default("DOP") @db.VarChar(3)
+  period         String    @default("monthly") @db.VarChar(20)
+  alertThreshold Decimal   @default(80) @map("alert_threshold") @db.Decimal(5, 2)
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category       Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@index([userId, period])
+  @@map("budgets")
+}
+
+model Alert {
+  id            String       @id @default(uuid()) @db.Uuid
+  userId        String       @map("user_id") @db.Uuid
+  transactionId String?      @map("transaction_id") @db.Uuid
+  type          String       @db.VarChar(50)
+  severity      String       @db.VarChar(20)
+  title         String
+  message       String
+  isRead        Boolean      @default(false) @map("is_read")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transaction   Transaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
+
+  @@index([userId, isRead])
+  @@map("alerts")
+}
+
+model CategoryRule {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String?   @map("user_id") @db.Uuid
+  pattern    String
+  categoryId String    @map("category_id") @db.Uuid
+  priority   Int       @default(100)
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  user       User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category   Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([userId, priority])
+  @@map("category_rules")
+}
+
+model RefreshToken {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  tokenHash   String   @map("token_hash")
+  deviceLabel String?  @map("device_label") @db.VarChar(120)
+  expiresAt   DateTime @map("expires_at")
+  revokedAt   DateTime? @map("revoked_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@map("refresh_tokens")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String?  @map("user_id") @db.Uuid
+  actorType   String   @map("actor_type") @db.VarChar(50)
+  action      String   @db.VarChar(100)
+  entityType  String   @map("entity_type") @db.VarChar(100)
+  entityId    String?  @map("entity_id") @db.Uuid
+  metadata    Json?
+  createdAt   DateTime @default(now()) @map("created_at")
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@map("audit_logs")
+}
