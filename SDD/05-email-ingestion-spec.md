@@ -9,12 +9,27 @@ Permitir que el backend capture correos bancarios autorizados por el usuario med
 - Gmail
 - Outlook/Microsoft Graph
 
+## Bancos y remitentes objetivo MVP
+
+### Banco Santa Cruz
+
+- Remitente confiable inicial: `notificaciones@bsc.com.do`
+- Subject esperado: `Notificación, Banco Santa Cruz`
+- Frase clave en cuerpo: `NOTIFICACIÓN DE CONSUMO`
+
+### Qik
+
+- Remitentes confiables iniciales: `notificaciones@qik.do`, `no-reply-qik@qik.com.do`
+- Subjects esperados: `Usaste tu tarjeta de crédito Qik`, `Pago de servicio realizado`
+- Frase clave en cuerpo para consumos: `Se hizo una transacción`
+- Señales adicionales: `tarjeta crédito Qik`, `Monto total pagado`, `Forma de pago`
+
 ## Flujo OAuth
 
 ```text
-Usuario → App → Backend /oauth/google/start → Google Consent Screen
-Google → Backend /oauth/google/callback → Guarda tokens cifrados
-Backend Worker → Gmail API → Correos bancarios → Parser
+Usuario -> App -> Backend /oauth/google/start -> Google Consent Screen
+Google -> Backend /oauth/google/callback -> Guarda tokens cifrados
+Backend Worker -> Gmail API -> Correos bancarios -> Parser
 ```
 
 ## Permisos recomendados
@@ -63,6 +78,18 @@ newer_than:30d
 
 ```text
 ("consumo aprobado" OR "transacción aprobada" OR "pago recibido")
+```
+
+### Filtros MVP recomendados
+
+```text
+from:(notificaciones@bsc.com.do)
+subject:("Notificación, Banco Santa Cruz")
+```
+
+```text
+from:(notificaciones@qik.do OR no-reply-qik@qik.com.do)
+subject:("Usaste tu tarjeta de crédito Qik" OR "Pago de servicio realizado")
 ```
 
 ## Datos a guardar

@@ -33,4 +33,5 @@ Desarrollar una aplicación Android/iOS para seguimiento automático de gastos b
 13. `13-testing-strategy.md`
 14. `14-devops-ci-cd.md`
 15. `15-roadmap.md`
-16. `AGENTS.md`
+16. `16-mvp-decisions.md`
+17. `AGENTS.md`

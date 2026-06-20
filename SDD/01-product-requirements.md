@@ -35,6 +35,22 @@ Automatizar la captura de gastos desde notificaciones bancarias y correos electr
 - Parsing de mensajes bancarios
 - Normalización de transacciones
 
+## Bancos objetivo MVP
+
+### Banco Santa Cruz
+
+- Remitente principal: `notificaciones@bsc.com.do`
+- Subject esperado: `Notificación, Banco Santa Cruz`
+- Indicador fuerte en cuerpo: `NOTIFICACIÓN DE CONSUMO`
+- Casos iniciales soportados: consumo con tarjeta de crédito
+
+### Qik
+
+- Remitentes principales: `notificaciones@qik.do`, `no-reply-qik@qik.com.do`
+- Subjects esperados: `Usaste tu tarjeta de crédito Qik`, `Pago de servicio realizado`
+- Indicador fuerte en cuerpo para consumos: `Se hizo una transacción`
+- Casos iniciales soportados: consumo con tarjeta de crédito y pago de servicio con tarjeta
+
 ## Funcionalidades principales
 
 ### MVP

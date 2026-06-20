@@ -67,12 +67,72 @@ Estrategia:
 
 ```text
 BankParser interface
-├── BancoPopularParser
-├── BancoBHDParser
-├── BanreservasParser
-├── ScotiabankParser
-└── GenericBankParser
+|-- BancoSantaCruzParser
+|-- QikParser
+`-- GenericBankParser
 ```
+
+## Patrones MVP por banco
+
+### Banco Santa Cruz - consumo
+
+Ejemplo real observado:
+
+```text
+NOTIFICACIÓN DE CONSUMO
+...
+Monto: RD$ 515.80
+Lugar de transacción: SIRENA MARKET COLINA CTROSANTO DOMINGODO
+Fecha y hora: 2/06/2026 09:47:22
+Estado: Aprobada
+```
+
+Extracciones esperadas:
+
+- `type`: `credit_card_purchase`
+- `amount`: valor después de `Monto:`
+- `merchant`: valor después de `Lugar de transacción:`
+- `transactionDate`: valor después de `Fecha y hora:`
+- `cardLast4`: 4 dígitos al final de `terminada en`
+
+### Qik - consumo con tarjeta
+
+Ejemplo real observado:
+
+```text
+Se hizo una transacción de RD$ 3,041.90 en NEXT LINCOLN GASOPOLIS
+con tu tarjeta crédito Qik que termina en ...5647
+Fecha y hora: 06-18-2026 08:30 PM (AST)
+Monto: RD$ 3,041.90
+```
+
+Extracciones esperadas:
+
+- `type`: `credit_card_purchase`
+- `amount`: valor después de `de RD$` o campo `Monto`
+- `merchant`: valor después de `en`
+- `transactionDate`: valor de `Fecha y hora`
+- `cardLast4`: 4 dígitos finales visibles
+
+### Qik - pago de servicio
+
+Ejemplo real observado:
+
+```text
+Monto total pagado RD$ 1,211.54
+Servicio Electricidad / Edesur
+Canal Pago de servicio
+Forma de pago Mastercard *5647
+```
+
+Extracciones esperadas:
+
+- `type`: `credit_card_purchase`
+- `amount`: valor después de `Monto total pagado`
+- `merchant`: valor del campo `Servicio`
+- `transactionDate`: valor del campo `Fecha y hora`
+- `cardLast4`: 4 dígitos al final de `Forma de pago`
+- `notes`: `channel=Pago de servicio`, `referenceNumber` si existe
 
 ## Reglas generales
 
@@ -89,7 +149,7 @@ Detectar patrones:
 Detectar:
 
 ```regex
-(terminada|finalizada|No\.|tarjeta)\s?(en|con)?\s?(\d{4})
+(terminada|finalizada|No\.|tarjeta|termina en|Forma de pago)\s?(en|con)?\s?.*?(\d{4})
 ```
 
 ### Comercio
@@ -101,6 +161,17 @@ en
 comercio
 establecimiento
 merchant
+Lugar de transacción:
+Servicio
+```
+
+### Fecha y hora
+
+Detectar etiquetas:
+
+```text
+Fecha y hora:
+fecha y hora
 ```
 
 ## Confianza

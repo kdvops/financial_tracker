@@ -7,6 +7,12 @@
 - Crear modelos de parsing.
 - Diseñar UI principal.
 
+### Estado actual de Fase 0
+
+- Bancos objetivo definidos: Banco Santa Cruz y Qik.
+- Ejemplos reales iniciales ya identificados para consumo y pago de servicio.
+- Falta convertir esos ejemplos en fixtures anonimizados para pruebas automatizadas.
+
 ## Fase 1 - MVP Backend
 
 - Auth
