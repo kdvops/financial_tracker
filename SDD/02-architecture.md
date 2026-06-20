@@ -4,30 +4,30 @@
 
 ```text
 App Flutter
-│
-├── Android
-│   ├── Notification Reader Service
-│   ├── Local Queue
-│   └── Secure Storage
-│
-├── iOS
-│   ├── OAuth Gmail/Outlook
-│   └── Secure Storage
-│
+|
+|-- Android
+|   |-- Notification Reader Service
+|   |-- Local Queue
+|   `-- Secure Storage
+|
+|-- iOS
+|   |-- OAuth Gmail/Outlook
+|   `-- Secure Storage
+|
 Backend NestJS
-│
-├── Auth Service
-├── OAuth Service
-├── Email Sync Worker
-├── Notification Ingestion API
-├── Bank Message Parser
-├── Transaction Normalizer
-├── Duplicate Detector
-├── AI Categorization Engine
-├── Budget Service
-├── Alert Service
-├── Card Reconciliation Service
-└── PostgreSQL
+|
+|-- Auth Service
+|-- OAuth Service
+|-- Email Sync Worker
+|-- Notification Ingestion API
+|-- Bank Message Parser
+|-- Transaction Normalizer
+|-- Duplicate Detector
+|-- AI Categorization Engine
+|-- Budget Service
+|-- Alert Service
+|-- Card Reconciliation Service
+`-- PostgreSQL
 ```
 
 ## Componentes
@@ -69,13 +69,13 @@ Responsables de:
 ## Flujo de notificación Android
 
 ```text
-Banco → Notificación Android → NotificationListenerService → App Flutter/Kotlin → Backend API → Parser → DB → Dashboard
+Banco -> Notificación Android -> NotificationListenerService -> App Flutter/Kotlin -> Backend API -> Parser -> DB -> Dashboard
 ```
 
 ## Flujo de correo
 
 ```text
-Banco → Gmail/Outlook → OAuth API → Backend Worker → Parser → DB → Dashboard
+Banco -> Gmail/Outlook -> OAuth API -> Backend Worker -> Parser -> DB -> Dashboard
 ```
 
 ## Decisiones técnicas
@@ -89,13 +89,22 @@ Se elige Flutter por:
 - Facilidad para crear UI financiera.
 - Permite canales nativos para Android NotificationListenerService.
 
+### Monorepo
+
+Se elige monorepo por:
+
+- Coordinación más simple entre app móvil, backend e infraestructura.
+- Evolución conjunta de contratos y decisiones de dominio.
+- Mejor soporte para desarrollo end-to-end del MVP.
+- Menor fricción operativa mientras el producto crece.
+
 ### NestJS
 
 Se elige NestJS por:
 
 - Arquitectura modular.
 - Buen soporte para APIs REST.
-- Integración con BullMQ, Prisma/TypeORM, JWT y OAuth.
+- Integración con BullMQ, Prisma, JWT y OAuth.
 - Escalable para microservicios futuros.
 
 ### PostgreSQL

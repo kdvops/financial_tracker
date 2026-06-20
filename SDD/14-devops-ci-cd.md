@@ -1,23 +1,24 @@
 # 14 - DevOps & CI/CD
 
-## Repositorios recomendados
+## Estrategia de repositorio
 
-```text
-financial-tracker-mobile
-financial-tracker-api
-financial-tracker-infra
-```
-
-O monorepo:
+Se adopta monorepo para el proyecto:
 
 ```text
 financial-tracker/
-├── apps/mobile
-├── apps/api
-├── packages/shared-contracts
-├── infra
-└── docs
+|-- apps/mobile
+|-- apps/api
+|-- packages/shared-contracts
+|-- infra
+`-- docs
 ```
+
+Razones:
+
+- Versionado coordinado de app y backend.
+- Contratos compartidos en un solo lugar.
+- Pipelines más simples para cambios de una sola funcionalidad.
+- Mejor soporte para desarrollo incremental del MVP.
 
 ## Pipeline Backend
 
@@ -76,7 +77,7 @@ Servicios:
 
 ## Migraciones
 
-Usar Prisma Migrate o TypeORM migrations.
+Usar Prisma Migrate.
 
 ## Observabilidad
 

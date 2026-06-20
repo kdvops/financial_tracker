@@ -4,32 +4,41 @@
 
 - NestJS
 - PostgreSQL
-- Prisma o TypeORM
+- Prisma ORM
 - Redis
 - BullMQ
 - JWT
 - OAuth2
 - OpenAPI/Swagger
 
+## Decisión ORM
+
+Se adopta Prisma por:
+
+- Tipado fuerte en TypeScript.
+- Esquema explícito y migraciones mantenibles.
+- Buena velocidad de desarrollo para el MVP.
+- Integración clara con PostgreSQL y flujos backend en NestJS.
+
 ## Módulos NestJS
 
 ```text
 src/
-├── auth/
-├── users/
-├── oauth/
-├── email-sync/
-├── notifications-ingestion/
-├── bank-parsers/
-├── transactions/
-├── cards/
-├── categories/
-├── budgets/
-├── alerts/
-├── reconciliation/
-├── duplicate-detector/
-├── audit/
-└── common/
+|-- auth/
+|-- users/
+|-- oauth/
+|-- email-sync/
+|-- notifications-ingestion/
+|-- bank-parsers/
+|-- transactions/
+|-- cards/
+|-- categories/
+|-- budgets/
+|-- alerts/
+|-- reconciliation/
+|-- duplicate-detector/
+|-- audit/
+`-- common/
 ```
 
 ## APIs principales

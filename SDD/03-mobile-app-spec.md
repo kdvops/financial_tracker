@@ -4,25 +4,33 @@
 
 - Flutter
 - Dart
-- Riverpod o Bloc para estado
+- Riverpod para estado e inyección de dependencias
 - Dio para HTTP
 - Flutter Secure Storage
 - Kotlin para módulo Android nativo
+
+## Decisión de estado
+
+Se adopta Riverpod para:
+
+- Manejo de estado asíncrono para auth, dashboard y sincronización.
+- Inyección de dependencias limpia entre servicios, repositorios y UI.
+- Reducir boilerplate frente a alternativas más ceremoniosas para el MVP.
 
 ## Módulos
 
 ```text
 lib/
-├── app/
-├── auth/
-├── dashboard/
-├── cards/
-├── transactions/
-├── budgets/
-├── alerts/
-├── settings/
-├── email_connection/
-└── android_notification_bridge/
+|-- app/
+|-- auth/
+|-- dashboard/
+|-- cards/
+|-- transactions/
+|-- budgets/
+|-- alerts/
+|-- settings/
+|-- email_connection/
+`-- android_notification_bridge/
 ```
 
 ## Pantallas
