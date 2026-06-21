@@ -11,5 +11,17 @@ export class TransactionsQueryDto {
 
   @IsOptional()
   @IsString()
+  cardId?: string;
+
+  @IsOptional()
+  @IsString()
+  categoryId?: string;
+
+  @IsOptional()
+  @IsString()
+  type?: string;
+
+  @IsOptional()
+  @IsString()
   status?: string;
 }

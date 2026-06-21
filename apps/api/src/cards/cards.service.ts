@@ -134,6 +134,7 @@ export class CardsService {
         if (transaction.type === 'credit_card_payment') {
           currentMonthPayments += amount;
         }
+
       }
     }
 

@@ -1,0 +1,27 @@
+name: financial_tracker_mobile
+description: Financial Tracker mobile app.
+publish_to: none
+
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+  flutter: '>=3.22.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: any
+  dio: any
+  flutter_riverpod: any
+  flutter_secure_storage: any
+  go_router: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: any
+
+flutter:
+  uses-material-design: true
+

@@ -66,11 +66,27 @@ export interface TransactionListItem {
   amount: number;
   currency: SupportedCurrency;
   merchant: string | null;
+  category: string | null;
+  categoryId?: string | null;
   cardLast4: string | null;
   cardId?: string | null;
   transactionDate: string;
   source: TransactionSource;
   status: TransactionStatus;
+}
+
+export interface CategoryListItem {
+  id: string;
+  name: string;
+  isSystem: boolean;
+}
+
+export interface CategoryRuleListItem {
+  id: string;
+  pattern: string;
+  categoryId: string;
+  category: string;
+  priority: number;
 }
 
 export interface CardListItem {
@@ -95,4 +111,33 @@ export interface CardStatementSummary {
     category: string;
     amount: number;
   }>;
+}
+
+export interface BudgetListItem {
+  id: string;
+  categoryId: string | null;
+  category: string | null;
+  amount: number;
+  currency: SupportedCurrency;
+  period: string;
+  alertThreshold: number;
+}
+
+export interface AlertListItem {
+  id: string;
+  type: string;
+  severity: string;
+  title: string;
+  message: string;
+  isRead: boolean;
+  transactionId: string | null;
+  createdAt: string;
+}
+
+export interface TransactionDetailItem extends TransactionListItem {
+  bankName: string | null;
+  rawMessageId: string | null;
+  confidence: number | null;
+  createdAt: string;
+  updatedAt: string;
 }
